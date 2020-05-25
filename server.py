@@ -111,11 +111,14 @@ class Server:
         print("listening on", (host, port))
         self.sel.register(lsock, selectors.EVENT_READ, self.accept)
 
-        while True:
-            events = self.sel.select()
-            for key, mask in events:
-                callback = key.data
-                callback(key.fileobj, mask)
+        try:
+            while True:
+                events = self.sel.select()
+                for key, mask in events:
+                    callback = key.data
+                    callback(key.fileobj, mask)
+        except KeyboardInterrupt:
+            self.sel.close()
         pass
     pass
 
